@@ -373,13 +373,13 @@ function load_env() {
 function load_partner_data() {
   global $partner;
 
-  $partner = load_env()['partner'];
+  $partner = array_merge($partner, load_env()['partner']);
 }
 
 function load_partner_open_data() {
   global $partner;
 
-  $partner['twh']='24437121';
+  $partner = array_merge($partner, load_env()['partner_open']);
 }
 
 function load_partner_token() {
