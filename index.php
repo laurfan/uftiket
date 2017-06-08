@@ -3,7 +3,7 @@
 $action = $_GET['action'];
 $entoken = $_GET['entoken'];
 
-$user=array();
+$partner=array();
 $data=array();
 $var=array(
   'today'=>date('Y-m-d'),
@@ -14,14 +14,14 @@ $var=array(
   );
 // Pre
 if($entoken) {
-  load_user_token();
+  load_partner_token();
 } else {
-  load_user_data();
+  load_partner_data();
 }
 
-load_user_open_data();
+load_partner_open_data();
 
-$data = array_merge($data, $user);
+$data = array_merge($data, $partner);
 $data['output']='json';
 
 // --- end of pre
@@ -32,7 +32,7 @@ $response = exec_curl($action());
 
 // Post
 if(!$entoken) {
-  write_user_token($response);
+  write_partner_token($response);
 }
 
 // --- end of post
@@ -366,36 +366,29 @@ function get_lion_captcha() {
  * Pvt
  */
 
-function load_user_data() {
-  global $user;
-
-  $user['secretkey']='c5ab15bd4cb377bb5290dcbc2dc5713f';
-  $user['confirmkey']='b98e2a';
-  $user['username']='urfan.laode@gmail.com';
-
-  $user['secretkey']='9947d6ae1a632d30e776d5a4e13779a8';
-  $user['confirmkey']='024e0b';
-  $user['username']='ufooo.id@gmail.com';
-  
-  // $user['secretkey']='a1baae3b29999dc9dc2cc0d7507c8542';
-  // $user['confirmkey']='2ef428';
-  // $user['username']='adzarkaromy@gmail.com';
-
+function load_env() {
+  return parse_ini_file(".env", 1);
 }
 
-function load_user_open_data() {
-  global $user;
+function load_partner_data() {
+  global $partner;
 
-  $user['twh']='24437121';
+  $partner = load_env()['partner'];
 }
 
-function load_user_token() {
-  global $user;
+function load_partner_open_data() {
+  global $partner;
 
-  $user['token']=json_decode(file_get_contents('data/token.json'))->token;
+  $partner['twh']='24437121';
 }
 
-function write_user_token($response) {
+function load_partner_token() {
+  global $partner;
+
+  $partner['token']=json_decode(file_get_contents('data/token.json'))->token;
+}
+
+function write_partner_token($response) {
   if ($response->rc == '00') {
     if(file_put_contents('data/token.json', $response->data)) {
       return $response->rc.":".'store success';
